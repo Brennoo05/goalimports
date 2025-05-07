@@ -1,0 +1,2407 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Catálogo de Camisas</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #111;
+      color: #fff;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      margin-bottom: 0;
+      height: 120px;
+      position: relative;
+      top: -20px;
+    }
+
+    .logo {
+      max-width: 180px;
+      height: auto;
+    }
+
+    h1, h2 {
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .carousel-wrapper {
+      position: relative;
+      margin-bottom: 60px;
+    }
+
+    .carousel-container {
+      display: flex;
+      overflow-x: auto; /* Permitindo rolagem horizontal */
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch; /* Melhor desempenho no iOS */
+      gap: 16px; /* Espaçamento entre os itens */
+      scroll-snap-type: x mandatory; /* Para travar a rolagem em cada item */
+      padding-bottom: 10px; /* Garantir que a barra de rolagem fique visível */
+    }
+
+    .carousel-container::-webkit-scrollbar {
+      height: 16px; /* Aumentar a espessura da barra de rolagem */
+    }
+
+    .carousel-container::-webkit-scrollbar-thumb {
+      background: #555;
+      border-radius: 8px; /* Borda arredondada */
+    }
+
+    .carousel-container::-webkit-scrollbar-track {
+      background: #222; /* Cor de fundo da área de rolagem */
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 16px;
+    }
+
+    .product {
+      background-color: #1a1a1a;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      text-align: center;
+      width: 240px;
+      flex: 0 0 auto;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .product:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .product img {
+      max-width: 100%;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .product img:hover {
+      transform: scale(1.05);
+    }
+
+    .product h3 {
+      font-size: 20px;
+      margin-top: 15px;
+      color: #fff;
+    }
+
+    .product p {
+      color: #bbb;
+      font-size: 14px;
+      margin: 10px 0;
+    }
+
+    select {
+      margin-top: 8px;
+      padding: 8px;
+      width: 100%;
+      border-radius: 8px;
+      border: none;
+      background-color: #222;
+      color: #fff;
+    }
+
+    .price-tag {
+      margin-top: 8px;
+      font-weight: bold;
+      color: #25D366;
+    }
+
+    .buy-button {
+      margin-top: 12px;
+      padding: 12px;
+      background-color: #25D366;
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .buy-button:hover {
+      background-color: #128C7E;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+    }
+
+    .popup img {
+      max-width: 90%;
+      max-height: 90%;
+      display: block;
+      margin: 5% auto;
+      border-radius: 12px;
+    }
+
+    .popup:target {
+      display: block;
+    }
+
+    .carousel-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      z-index: 1;
+      font-size: 18px;
+      border-radius: 50%;
+      transition: background 0.3s;
+    }
+
+    .carousel-button:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .carousel-button.prev {
+      left: -20px;
+    }
+
+    .carousel-button.next {
+      right: -20px;
+    }
+
+    @media (max-width: 600px) {
+      .product {
+        width: 180px;
+      }
+
+      h1, h2 {
+        font-size: 20px;
+      }
+
+      .carousel-button {
+        padding: 8px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="logo-container">
+  <img src="logo-removebg-preview.png" alt="Logo da Loja" class="logo" />
+</div>
+
+<h1>Catálogo de Camisas</h1>
+
+<div id="catalogo"></div>
+
+<script>
+const camisas = [
+    
+    {
+      "nome": "Camisa Barcelona 24/25",
+      "imagem": "camisas/camisapretabarça.jpg",
+      "descricao": "",
+      "tamanhos": ["P", "M", "G", "GG"],
+      "categoria": "Europa"
+    },
+
+
+  {
+        "nome": "Camisa Manchester City 24/25",
+        "imagem": "camisas/camisacityverde.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Europa"
+      },
+    {
+      "nome": "Camisa Polo Branca Palmeiras",
+      "imagem": "camisas/camisapolopalmeiras.png",
+      "descricao": "",
+      "tamanhos": ["M", "G"],
+      "categoria": "Polo"
+    },
+    {
+      "nome": "Camisa Polo Corinthians Retrô Gold",
+      "imagem": "camisas/corinthianspolopreta.png",
+      "descricao": "",
+      "tamanhos": [ "M", "G"],
+      "categoria": "Polo"
+    },
+
+    {
+        "nome": "Camisa 3 Inter de Milão 24/25",
+        "imagem": "camisas/interamarela.png",
+        "descricao": "",
+        "tamanhos": ["M", "G", "GG"],
+        "categoria": "Europa"
+      },
+
+      {
+        "nome": "Camisa Away Botafogo 24/25",
+        "imagem": "camisas/camisaaway.png",
+        "descricao": "",
+        "tamanhos": ["G"],
+        "categoria": "Brasileirão"
+      },
+
+
+      {
+        "nome": "Camisa Botafogo 24/25",
+        "imagem": "camisas/camisabranca.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+
+      {
+        "nome": "Camisa 2 Atlético-MG 24/25",
+        "imagem": "camisas/camisabrancagalo.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+
+      {
+        "nome": "Camisa Vasco 100 anos 24/25",
+        "imagem": "camisas/camisavasco100.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa 2 do Bahia 2024",
+        "imagem": "camisas/bahia.png",
+        "descricao": "",
+        "tamanhos": ["M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa Vitória edição 2025",
+        "imagem": "camisas/vitoriameio.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa Especial Vitória 2023",
+        "imagem": "camisas/especialvitoria.png",
+        "descricao": "",
+        "tamanhos": ["M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa Polo Real Madrid",
+        "imagem": "camisas/poloreal.png",
+        "descricao": "",
+        "tamanhos": ["M", "G"],
+        "categoria": "Polo"
+      },
+      {
+        "nome": "Camisa 2 Palmeiras 24/25",
+        "imagem": "camisas/crefisabranca.png",
+        "descricao": "",
+        "tamanhos": ["M"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa Palmeiras 24/25",
+        "imagem": "camisas/crefisa.png",
+        "descricao": "",
+        "tamanhos": ["M"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa Atlético de Madrid 24/25",
+        "imagem": "camisas/atleti.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Europa"
+      },
+      {
+        "nome": "Camisa Argentina Listrada 25/26",
+        "imagem": "camisas/argentina2526.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Seleções"
+      },
+      {
+        "nome": "Camisa Branca Colômbia 100 Anos",
+        "imagem": "camisas/colombia.png",
+        "descricao": "",
+        "tamanhos": ["M", "G", "GG"],
+        "categoria": "Seleções"
+      },
+      {
+        "nome": "Camisa Bayern Leverkusen 2025",
+        "imagem": "camisas/leverkusen.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Europa"
+      },
+      {
+        "nome": "Camisa Retrô Azul Santos",
+        "imagem": "camisas/retroazul.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Retrô"
+      },
+      {
+        "nome": "Camisa 11/12 Santos Retrô",
+        "imagem": "camisas/retroBRANCA.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Retrô"
+      },
+      {
+        "nome": "Camisa Palmeiras 25/26",
+        "imagem": "camisas/palmeirasbet.png",
+        "descricao": "",
+        "tamanhos": ["M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa branca Japão 24/25",
+        "imagem": "camisas/japaobranca.png",
+        "descricao": "",
+        "tamanhos": ["M", "G"],
+        "categoria": "Seleções"
+      },
+      {
+        "nome": "Camisa Inglaterra Balmain",
+        "imagem": "camisas/inglaterrapreta.png",
+        "descricao": "",
+        "tamanhos": ["G"],
+        "categoria": "Seleções"
+      },
+      {
+        "nome": "Camisa Retrô Corinthians",
+        "imagem": "camisas/KALUNGATOPPER.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Retrô"
+      },
+      {
+        "nome": "Camisa São Paulo edição 2025",
+        "imagem": "camisas/superbet.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa São Paulo 3 2025",
+        "imagem": "camisas/camisa3.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa Azul Santos - NJR",
+        "imagem": "camisas/camisaazul.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa Santos Edição Racionais",
+        "imagem": "camisas/Screenshot_84.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa de Treino Corinthians 2025",
+        "imagem": "camisas/camisatreino.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa Polo Roxa Corinthians 2025",
+        "imagem": "camisas/poloroxa.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G"],
+        "categoria": "Polo"
+      },
+      {
+        "nome": "Camisa Porto Edição 2025",
+        "imagem": "camisas/porto.png",
+        "descricao": "",
+        "tamanhos": ["G"],
+        "categoria": "Europa"
+      },
+      {
+        "nome": "Camisa Retrô Japão 2002",
+        "imagem": "camisas/japaoretro.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Retrô"
+      },
+      {
+        "nome": "Camisa Brasil 1998 - Ronaldinho",
+        "imagem": "camisas/brasilronaldinho.png",
+        "descricao": "",
+        "tamanhos": ["M", "G", "GG"],
+        "categoria": "Retrô"
+      },
+      {
+        "nome": "Camisa Home Real Madrid",
+        "imagem": "camisas/realamarela.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Europa"
+      },
+      {
+        "nome": "Camisa Polo Branca Inglaterra",
+        "imagem": "camisas/poloinglaterra.png",
+        "descricao": "",
+        "tamanhos": ["M", "G", "GG"],
+        "categoria": "Polo"
+      },
+      {
+        "nome": "Camisa Corinthians 23/24",
+        "imagem": "camisas/golatimao.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Brasileirão"
+      },
+      {
+        "nome": "Camisa Bayern de Munique 125 Anos",
+        "imagem": "camisas/Screenshot_87.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G", "GG"],
+        "categoria": "Europa"
+      },
+      {
+        "nome": "Camisa Polo Corinthians",
+        "imagem": "camisas/Screenshot_86.png",
+        "descricao": "",
+        "tamanhos": ["P", "M", "G"],
+        "categoria": "Polo"
+      },
+      {
+        "nome": "Camisa PSG Balmain Preta",
+        "imagem": "camisas/Screenshot_85.png",
+        "descricao": "",
+        "tamanhos": ["G"],
+        "categoria": "Europa"
+      },
+      {
+        "nome": "Camisa Preta RB Salzburg",
+        "imagem": "camisas/Screenshot_83.png",
+        "descricao": "",
+        "tamanhos": ["G"],
+        "categoria": "Europa"
+      },
+      {
+        "nome": "Camisa Japão Edição Especial Goku ",
+        "imagem": "camisas/Screenshot_82.png",
+        "descricao": "",
+        "tamanhos": ["G"],
+        "categoria": "Seleções"
+      },
+      {
+    "nome": "Camisa Retrô Corinthians 1995 Suvinil",
+    "imagem": "camisas/1.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Retrô Barcelona 2015/16",
+    "imagem": "camisas/2.png",
+    "descricao": "",
+    "tamanhos": [
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Polo Corinthians 20/21",
+    "imagem": "camisas/3.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Polo"
+  },
+  {
+    "nome": "Camisa Retrô Flamengo 2009",
+    "imagem": "camisas/4.png",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Retrô Corinthians 2011",
+    "imagem": "camisas/5.png",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa 3 do Inter Miami 2024",
+    "imagem": "camisas/6.png",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Geral"
+  },
+  {
+    "nome": "Camisa Retrô Milan 2007",
+    "imagem": "camisas/7.png",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Real Madrid 2017/18",
+    "imagem": "camisas/8.png",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Retrô Real Madrid 2011/12",
+    "imagem": "camisas/9.png",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Al Nassr 2024/25",
+    "imagem": "camisas/10.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Geral"
+  },
+  {
+    "nome": "Camisa Flamengo Pré-Jogo 2024/25",
+    "imagem": "camisas/11.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa de Treino Flamengo 2024/25",
+    "imagem": "camisas/12.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa São Paulo Conscientização Negra",
+    "imagem": "camisas/13.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Chelsea 2024/25",
+    "imagem": "camisas/14.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa 2 Argentina 2024",
+    "imagem": "camisas/15.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa Retrô Corinthians 1999",
+    "imagem": "camisas/16.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Real Madrid 2024/25",
+    "imagem": "camisas/17.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa 2 Barcelona 2024/25",
+    "imagem": "camisas/18.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa de Goleiro Flamengo 2022/23 - Modelo Polo",
+    "imagem": "camisas/19.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "GG"
+    ],
+    "categoria": "Polo"
+  },
+  {
+    "nome": "Camisa Bayern de Munique 2024/25",
+    "imagem": "camisas/20.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa 2 da Seleção da Inglaterra 2024/25",
+    "imagem": "camisas/21.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "GG"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa 2 da Bélgica 2024",
+    "imagem": "camisas/22.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa Seleção da Itália 2024/25",
+    "imagem": "camisas/23.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "M"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa Retrô Manchester United 2001/02",
+    "imagem": "camisas/24.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "G"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Real Madrid Balmain 2024",
+    "imagem": "camisas/25.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Santos 2025 - Personalizada Neymar Jr",
+    "imagem": "camisas/26.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô Brasil 1998",
+    "imagem": "camisas/27.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Arsenal 2024/25",
+    "imagem": "camisas/28.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa branca Borussia Dortmund 2024/25",
+    "imagem": "camisas/29.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Corinthians 2025/26",
+    "imagem": "camisas/30.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Pré-Jogo Corinthians 2025",
+    "imagem": "camisas/31.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa 32 Modelo Padrão",
+    "imagem": "camisas/32.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "G",
+      "GG",
+      "M"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Retrô Corinthians 1990",
+    "imagem": "camisas/33.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Adidas Atlético Mineiro Treino Comissão 2025",
+    "imagem": "camisas/34.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Atlético Mineiro 2025",
+    "imagem": "camisas/35.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô Santos – Personalizada Neymar Jr",
+    "imagem": "camisas/36.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Santos Preta – Edição Especial Racionais MCs",
+    "imagem": "camisas/37.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Bahia 2024/25",
+    "imagem": "camisas/38.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Santos Preta – Personalizada Neymar Jr",
+    "imagem": "camisas/39.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Botafogo 4ª 2024/25",
+    "imagem": "camisas/40.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô Corinthians 2000",
+    "imagem": "camisas/41.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Santos – Personalizada Neymar Jr",
+    "imagem": "camisas/42.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô São Paulo 1999/2000 ",
+    "imagem": "camisas/43.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa 2 do Corinthians 2025/26",
+    "imagem": "camisas/44.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Al-Ittihad – Personalizada Benzema",
+    "imagem": "camisas/45.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Geral"
+  },
+  {
+    "nome": "Camisa Retrô Chelsea 2012/13",
+    "imagem": "camisas/46.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Retrô Fiorentina 1998/99",
+    "imagem": "camisas/47.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Preta Corinthians 2024",
+    "imagem": "camisas/48.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô Manchester United Final Champions 2008",
+    "imagem": "camisas/49.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa de Treino Cruzeiro 25/26 ",
+    "imagem": "camisas/50.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô Corinthians 2000 - Batavo",
+    "imagem": "camisas/51.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Flamengo 25/26",
+    "imagem": "camisas/52.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô Milan 2008",
+    "imagem": "camisas/53.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa de Treino Flamengo 2024",
+    "imagem": "camisas/54.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô Real Madrid - Ronaldo Fenômeno",
+    "imagem": "camisas/55.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Fluminense 25/26 ",
+    "imagem": "camisas/56.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô Real Madrid 2006",
+    "imagem": "camisas/57.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Fortaleza 2025",
+    "imagem": "camisas/58.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô Seleção Brasileira - Roberto Carlos (Copa de 2002)",
+    "imagem": "camisas/59.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa 3 Dourada Palmeiras 2024",
+    "imagem": "camisas/60.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô Seleção Brasileira - Ronaldo (Copa de 1998)",
+    "imagem": "camisas/61.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Especial Palmeiras \"Palmeiras e o Verde\" 2023",
+    "imagem": "camisas/62.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Palmeiras 2025 - Modelo Torcedor Titular",
+    "imagem": "camisas/63.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô Seleção Brasileira - Ronaldo (Copa de 2006)",
+    "imagem": "camisas/64.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Santos Charlie Brown",
+    "imagem": "camisas/65.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Pré-Jogo São Paulo 25",
+    "imagem": "camisas/66.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa de Goleiro São Paulo 2025",
+    "imagem": "camisas/67.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa 3 Arsenal 24/25",
+    "imagem": "camisas/68.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa 2 Bayern de Munique 24/25",
+    "imagem": "camisas/69.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Away Borussia Dortmund 24/25",
+    "imagem": "camisas/70.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Home Borussia Dortmund 24/25",
+    "imagem": "camisas/71.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Borussia Dortmund 2024",
+    "imagem": "camisas/72.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Inter de Milão 2023",
+    "imagem": "camisas/73.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Juventus",
+    "imagem": "camisas/74.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa 3 Juventus 24/25",
+    "imagem": "camisas/75.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Lyon 2024/25",
+    "imagem": "camisas/76.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa 2 Manchester City 2023",
+    "imagem": "camisas/77.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Manchester United 2025",
+    "imagem": "camisas/78.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Away Milan 2025 ",
+    "imagem": "camisas/79.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa AC Milan",
+    "imagem": "camisas/80.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Away Salzburg 24/25",
+    "imagem": "camisas/81.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Roma 23/24 ",
+    "imagem": "camisas/82.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa da Seleção da Alemanha 24/25",
+    "imagem": "camisas/83.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa 2 Seleção Alemã 22/23",
+    "imagem": "camisas/84.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Pré-Jogo Argentina 2024 (Preta)",
+    "imagem": "camisas/85.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa Polo Comissão Técnica Brasil",
+    "imagem": "camisas/86.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Polo"
+  },
+  {
+    "nome": "Camisa Espanha 24/25",
+    "imagem": "camisas/87.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa Principal Japão 24 x Y-3 - Azul",
+    "imagem": "camisas/88.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa México Preta e Dourada",
+    "imagem": "camisas/89.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa Portugal Home 2025",
+    "imagem": "camisas/90.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa Seleção Uruguai 2024",
+    "imagem": "camisas/91.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa 3 Atlético Mineiro 2024",
+    "imagem": "camisas/92.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Seleção França 24/25",
+    "imagem": "camisas/93.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa Puma Palmeiras 25/26",
+    "imagem": "camisas/94.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Polo Atleta Flamengo 24/25",
+    "imagem": "camisas/95.png",
+    "descricao": "",
+    "tamanhos": [
+      "P"
+    ],
+    "categoria": "Polo"
+  },
+  {
+    "nome": "Camisa Japão 22/23",
+    "imagem": "camisas/96.png",
+    "descricao": "",
+    "tamanhos": [
+      "P"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa Retrô Manchester United 97/98",
+    "imagem": "camisas/97.png",
+    "descricao": "",
+    "tamanhos": [
+      "P"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Retrô Flamengo – Adriano Imperador",
+    "imagem": "camisas/98.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Corinthians",
+    "imagem": "camisas/99.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Seleção Brasileira 1998 – Ronaldo Fenômeno",
+    "imagem": "camisas/100.png",
+    "descricao": "",
+    "tamanhos": [
+      "P"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa PSG",
+    "imagem": "camisas/101.png",
+    "descricao": "",
+    "tamanhos": [
+      "P"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Milan",
+    "imagem": "camisas/102.png",
+    "descricao": "",
+    "tamanhos": [
+      "P"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa 4 PSG 22/23",
+    "imagem": "camisas/103.png",
+    "descricao": "",
+    "tamanhos": [
+      "P"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Real Madrid 23/24",
+    "imagem": "camisas/104.png",
+    "descricao": "",
+    "tamanhos": [
+      "M"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Branca Palmeiras",
+    "imagem": "camisas/105.png",
+    "descricao": "",
+    "tamanhos": [
+      "M"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Cruzeiro 25/26",
+    "imagem": "camisas/106.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Inter de Milão 24/25",
+    "imagem": "camisas/107.png",
+    "descricao": "",
+    "tamanhos": [
+      "M"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Brasil - Cristo Redentor",
+    "imagem": "camisas/108.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Geral"
+  },
+  {
+    "nome": "Camisa Flamengo Preta Balmain",
+    "imagem": "camisas/109.png",
+    "descricao": "",
+    "tamanhos": [
+      "M"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Santos 24/25",
+    "imagem": "camisas/110.png",
+    "descricao": "",
+    "tamanhos": [
+      "M"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Preta Corinthians Balmain",
+    "imagem": "camisas/111.png",
+    "descricao": "",
+    "tamanhos": [
+      "M"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Polo Palmeiras",
+    "imagem": "camisas/112.png",
+    "descricao": "",
+    "tamanhos": [
+      "M"
+    ],
+    "categoria": "Polo"
+  },
+  {
+    "nome": "Camisa Liverpool 21/22",
+    "imagem": "camisas/113.png",
+    "descricao": "",
+    "tamanhos": [
+      "M"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Club Deportivo Guadalajara 22/23",
+    "imagem": "camisas/114.png",
+    "descricao": "",
+    "tamanhos": [
+      "M"
+    ],
+    "categoria": "Geral"
+  },
+  {
+    "nome": "Camisa do Flamengo 3 - 2024",
+    "imagem": "camisas/115.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Barcelona Retrô 2007",
+    "imagem": "camisas/116.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa PSG 24/25",
+    "imagem": "camisas/117.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Real Madrid 24/25",
+    "imagem": "camisas/118.png",
+    "descricao": "",
+    "tamanhos": [
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Vitória 23/24",
+    "imagem": "camisas/119.png",
+    "descricao": "",
+    "tamanhos": [
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Polo da França",
+    "imagem": "camisas/120.png",
+    "descricao": "",
+    "tamanhos": [
+      "GG"
+    ],
+    "categoria": "Polo"
+  },
+  {
+    "nome": "Camisa Cruzeiro 2024",
+    "imagem": "camisas/121.png",
+    "descricao": "",
+    "tamanhos": [
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa 3 do Liverpool 24/25",
+    "imagem": "camisas/122.png",
+    "descricao": "",
+    "tamanhos": [
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Polo São Paulo",
+    "imagem": "camisas/123.png",
+    "descricao": "",
+    "tamanhos": [
+      "GG"
+    ],
+    "categoria": "Polo"
+  },
+  {
+    "nome": "Camisa Grêmio 2025",
+    "imagem": "camisas/124.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Inter 2025",
+    "imagem": "camisas/125.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Vermelha do Bahia",
+    "imagem": "camisas/126.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Brasil 94 - Personalizada Romário",
+    "imagem": "camisas/127.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Flamengo Preta",
+    "imagem": "camisas/128.png",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Barcelona 24/25",
+    "imagem": "camisas/129.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Preta do Milan 24/25",
+    "imagem": "camisas/130.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa 2 da Seleção Brasileira de 98",
+    "imagem": "camisas/131.png",
+    "descricao": "",
+    "tamanhos": [
+      "M",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Marrom Flamengo",
+    "imagem": "camisas/132.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Roma 24/25",
+    "imagem": "camisas/133.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Atlético Mineiro",
+    "imagem": "camisas/134.png",
+    "descricao": "",
+    "tamanhos": [
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Liverpool Balmain",
+    "imagem": "camisas/135.png",
+    "descricao": "",
+    "tamanhos": [
+      "G"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Bayern de Munique 24/25",
+    "imagem": "camisas/136.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Polo da França",
+    "imagem": "camisas/137.png",
+    "descricao": "",
+    "tamanhos": [
+      "G",
+      "GG"
+    ],
+    "categoria": "Polo"
+  },
+  {
+    "nome": "Camisa Japão Edição Especial Dragon Ball Z",
+    "imagem": "camisas/138.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa Barcelona 24/25",
+    "imagem": "camisas/139.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa 3 do Chelsea Modelo Polo 24/25",
+    "imagem": "camisas/140.png",
+    "descricao": "",
+    "tamanhos": [
+      "G"
+    ],
+    "categoria": "Polo"
+  },
+  {
+    "nome": "Camisa Retrô do Flamengo",
+    "imagem": "camisas/141.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Roma 20/21",
+    "imagem": "camisas/142.png",
+    "descricao": "",
+    "tamanhos": [
+      "G"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Bahia 24/25",
+    "imagem": "camisas/143.png",
+    "descricao": "",
+    "tamanhos": [
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Polo Tottenham",
+    "imagem": "camisas/144.png",
+    "descricao": "",
+    "tamanhos": [
+      "G",
+      "GG"
+    ],
+    "categoria": "Polo"
+  },
+  {
+    "nome": "Camisa Azul Polo do Chelsea",
+    "imagem": "camisas/145.png",
+    "descricao": "",
+    "tamanhos": [
+      "G"
+    ],
+    "categoria": "Polo"
+  },
+  {
+    "nome": "Camisa Fluminense 2024",
+    "imagem": "camisas/146.png",
+    "descricao": "",
+    "tamanhos": [
+      "G"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Manchester City 24/25",
+    "imagem": "camisas/147.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Borussia Dortmund 23/24",
+    "imagem": "camisas/148.png",
+    "descricao": "",
+    "tamanhos": [
+      "G"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Tottenham 24/25",
+    "imagem": "camisas/149.png",
+    "descricao": "",
+    "tamanhos": [
+      "G"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa 2 Flamengo 2025",
+    "imagem": "camisas/150.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Inglaterra \"Símbolo Camaleão\"",
+    "imagem": "camisas/151.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Seleções"
+  },
+  {
+    "nome": "Camisa Bayern de Munique 2012/2013",
+    "imagem": "camisas/152.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Europa"
+  },
+  {
+    "nome": "Camisa Retrô Internazionale Milão 1997-1998",
+    "imagem": "camisas/153.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Do Flamengo Azul Goleiro\n",
+    "imagem": "camisas/154.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Santos Charlie Brown",
+    "imagem": "camisas/155.jpg",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Brasileirão"
+  },
+  {
+    "nome": "Camisa Retrô Seleção Brasileira 2002",
+    "imagem": "camisas/156.png",
+    "descricao": "",
+    "tamanhos": [
+      "G",
+      "GG"
+    ],
+    "categoria": "Retrô"
+  },
+  {
+    "nome": "Camisa Nigéria 2018",
+    "imagem": "camisas/157.png",
+    "descricao": "",
+    "tamanhos": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "categoria": "Seleções"
+  }
+    
+  ];
+
+const catalogo = document.getElementById('catalogo');
+const categorias = {};
+
+camisas.forEach((camisa, index) => {
+  if (!categorias[camisa.categoria]) categorias[camisa.categoria] = [];
+  categorias[camisa.categoria].push({ ...camisa, index });
+});
+
+Object.keys(categorias).forEach(categoria => {
+  const titulo = document.createElement('h2');
+  titulo.textContent = categoria;
+  catalogo.appendChild(titulo);
+
+  const wrapper = document.createElement('div');
+  wrapper.classList.add('carousel-wrapper');
+
+  const prevButton = document.createElement('button');
+  prevButton.classList.add('carousel-button', 'prev');
+  prevButton.textContent = '←';
+
+  const nextButton = document.createElement('button');
+  nextButton.classList.add('carousel-button', 'next');
+  nextButton.textContent = '→';
+
+  const container = document.createElement('div');
+  container.classList.add('carousel-container');
+
+  const track = document.createElement('div');
+  track.classList.add('carousel-track');
+
+  categorias[categoria].forEach(camisa => {
+    const div = document.createElement('div');
+    div.classList.add('product');
+
+    // Determina o preço base dependendo da categoria
+    let precoBase;
+    if (camisa.categoria === 'Retrô') {
+      precoBase = 149.90; // Camisa retrô tem preço diferente
+    } else {
+      precoBase = 129.90; // Camisa normal tem preço base de R$129,90
+    }
+
+    div.innerHTML = `
+      <a href="#" class="open-popup" data-index="${camisa.index}"><img src="${camisa.imagem}" alt="${camisa.nome}" /></a>
+      <h3>${camisa.nome}</h3>
+      <p>${camisa.descricao}</p>
+      <select id="tamanho${camisa.index}">
+        ${camisa.tamanhos.map(t => `<option>${t}</option>`).join('')}
+      </select>
+      <select id="personalizacao${camisa.index}" onchange="atualizarPreco(${camisa.index}, '${camisa.categoria}')">
+        <option value="0">Sem personalização</option>
+        <option value="40">Nome</option>
+        <option value="40n">1 Número</option>
+        <option value="50">Nome + 1 Número</option>
+        <option value="55">Nome + 2 Números</option>
+        <option value="75">Frase</option>
+      </select>
+      <div class="price-tag" id="preco${camisa.index}">R$ ${precoBase.toFixed(2).replace('.', ',')}</div>
+      <a href="#" class="buy-button" onclick="enviarWhatsApp('${camisa.nome}', '${camisa.imagem}', 'tamanho${camisa.index}', 'personalizacao${camisa.index}', ${precoBase}, '${camisa.categoria}', ${camisa.index})">Chamar no WhatsApp</a>
+    `;
+
+    track.appendChild(div);
+
+    const popup = document.createElement('div');
+    popup.id = `popup${camisa.index}`;
+    popup.className = 'popup';
+
+    const imgPopup = document.createElement('img');
+    imgPopup.src = camisa.imagem;
+    popup.appendChild(imgPopup);
+
+    popup.onclick = function () {
+      popup.style.display = 'none';
+    };
+
+    document.body.appendChild(popup);
+  });
+
+  container.appendChild(track);
+  wrapper.appendChild(prevButton);
+  wrapper.appendChild(container);
+  wrapper.appendChild(nextButton);
+  catalogo.appendChild(wrapper);
+
+  prevButton.addEventListener('click', () => {
+    container.scrollBy({ left: -240, behavior: 'smooth' });
+  });
+
+  nextButton.addEventListener('click', () => {
+    container.scrollBy({ left: 240, behavior: 'smooth' });
+  });
+});
+
+document.querySelectorAll('.open-popup').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const index = this.getAttribute('data-index');
+    const popup = document.getElementById(`popup${index}`);
+    popup.style.display = 'block';
+  });
+});
+
+function atualizarPreco(index, categoria) {
+  const select = document.getElementById(`personalizacao${index}`);
+  const extra = select.value.includes('n') ? 40 : parseFloat(select.value);
+
+  let total;
+  if (categoria === 'Retrô') {
+    total = 149.90 + extra;
+  } else {
+    total = 129.90 + extra; // Somando o preço base de R$129,90 com o valor da personalização
+  }
+
+  document.getElementById(`preco${index}`).textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+}
+
+function enviarWhatsApp(nome, imagem, selectId, personalizacaoId, precoBase, categoria, index) {
+  const numero = '5513997417117';
+  const tamanho = document.getElementById(selectId).value;
+  const personalizacao = document.getElementById(personalizacaoId);
+  const opcao = personalizacao.options[personalizacao.selectedIndex].text;
+  const extra = personalizacao.value.includes('n') ? 40 : parseFloat(personalizacao.value);
+
+  let total;
+  if (categoria === 'Retrô') {
+    total = 149.90 + extra;
+  } else {
+    total = 129.90 + extra; // Somando o preço base de R$129,90 com o valor da personalização
+  }
+
+  const texto = `Olá! Me interessei pela camisa.%0A%0AProduto: ${nome}%0ATamanho: ${tamanho}%0APersonalização: ${opcao}%0APreço: R$ ${total.toFixed(2).replace('.', ',')}%0AFoto: ${imagem}`;
+  const url = `https://wa.me/${numero}?text=${texto}`;
+  window.open(url, '_blank');
+}
+
+document.addEventListener('keydown', function(event) {
+  if (event.key === "Escape") {
+    const popups = document.querySelectorAll('.popup');
+    popups.forEach(popup => {
+      popup.style.display = 'none';
+    });
+  }
+});
+</script>
+
+</body>
+</html>
